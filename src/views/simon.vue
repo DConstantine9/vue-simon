@@ -7,9 +7,9 @@
     <div id="inner-circle">
       <div id="title" class="font-effect-emboss">SIMON!</div>
       <div id="switches">
-        <input type="checkbox" class="toggle" id="on">
-        <button class="button" id="start">Start</button>
-        <input v-bind:strict="strict" v-on:change="strictFn" type="checkbox" class="toggle" id="strict">
+        <input v-on:change="onFn" type="checkbox" class="toggle" id="on">
+        <button v-on:click="startFn" class="button" id="start">Start</button>
+        <input v-on:change="strictFn" type="checkbox" class="toggle" id="strict">
       </div>
       <div class="text1">
         <span>POWER</span><span>STRICT</span>
@@ -24,11 +24,11 @@
 
 <script>
 export default {
-//name: Simon,
-data() {
+name: "Simon",
+data: function() {
   return {
     order: [],
-    playerOreder: [],
+    playerOrder: [],
     flash: null,
     turn: null,
     good: null,
@@ -37,19 +37,77 @@ data() {
     strict: false,
     noise: false,
     on: false,
-    win: null
+    win: null,
   }
 },
+
 methods: {
-  strictFn: () => {
+  strictFn: function() {
     let strictBtn = document.getElementById("strict")
     if (strictBtn.checked) {
       this.strict = true
     } else {
       this.strict = false
     }
-    console.log(this.strict)
   },
+
+  onFn: function() {
+    let turnCounter = document.getElementById("turn")
+    let onBtn = document.getElementById("on")
+    if (onBtn.checked) {
+      this.on = true;
+      turnCounter.innerHTML = "-";
+    } else {
+      this.on = false;
+      turnCounter.innerHTML = "";
+      clearInterval(this.intervalId)
+    }
+  },
+
+  startFn: function() {
+    if (this.on || this.win) {
+      this.play()
+    }
+  },
+
+  play: function() {
+    let turnCounter = document.getElementById("turn")
+    this.win = false;
+    this.order = [];
+    this.playerOrder = [];
+    this.flash = 0;
+    this.intervalId = 0;
+    this.turn = 1;
+    turnCounter.innerHTML = 1;
+    this.good = true;
+    for (let i=0; i < 20; i++) {
+      this.order.push(Math.floor(Math.random() * 4) + 1)
+    }
+    console.log(this.order)
+    this.compTurn = true;
+    this.intervalId = setInterval(this.gameTurn, 800)
+  },
+
+  gameTurn: function() {
+    on = false;
+    if (this.flash === this.turn) {
+      clearInterval(this.intervalId);
+      this.compTurn = false;
+      this.on = true;
+    }
+
+    if (this.compTurn) {
+      setTimeout(() => {
+        if (this.order[this.flash] == 1) this.one();
+        if (this.order[this.flash] == 2) this.two();
+        if (this.order[this.flash] == 3) this.three();
+        if (this.order[this.flash] == 4) this.four();
+        this.flash++;
+      }, 200)
+    }
+  },
+
+  
 
 
 }
