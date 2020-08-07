@@ -1,9 +1,23 @@
 <template>
+<div>
+<audio id="sound1">
+  <source src="../assets/one.mp3">
+</audio>
+<audio id="sound2">
+  <source src="../assets/two.mp3">
+</audio>
+<audio id="sound3">
+  <source src="../assets/three.mp3">
+</audio>
+<audio id="sound4">
+  <source src="../assets/four.mp3">
+</audio>
+
   <div id="outer-circle">
-    <div id="topleft"></div>
-    <div id="topright"></div>
-    <div id="bottomleft"></div>
-    <div id="bottomright"></div>
+    <div v-on:click="topleftFn" id="topleft"></div>
+    <div v-on:click="toprightFn" id="topright"></div>
+    <div v-on:click="bottomleftFn" id="bottomleft"></div>
+    <div v-on:click="bottomrightFn" id="bottomright"></div>
     <div id="inner-circle">
       <div id="title" class="font-effect-emboss">SIMON!</div>
       <div id="switches">
@@ -20,6 +34,7 @@
       </div>
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -60,6 +75,7 @@ methods: {
     } else {
       this.on = false;
       turnCounter.innerHTML = "";
+      this.clearColor();
       clearInterval(this.intervalId)
     }
   },
@@ -80,23 +96,25 @@ methods: {
     this.turn = 1;
     turnCounter.innerHTML = 1;
     this.good = true;
-    for (let i=0; i < 20; i++) {
+    for (let i = 0; i < 20; i++) {
       this.order.push(Math.floor(Math.random() * 4) + 1)
     }
-    console.log(this.order)
     this.compTurn = true;
     this.intervalId = setInterval(this.gameTurn, 800)
   },
 
   gameTurn: function() {
-    on = false;
+    this.on = false;
+
     if (this.flash === this.turn) {
       clearInterval(this.intervalId);
       this.compTurn = false;
+      this.clearColor();
       this.on = true;
     }
 
     if (this.compTurn) {
+      this.clearColor();
       setTimeout(() => {
         if (this.order[this.flash] == 1) this.one();
         if (this.order[this.flash] == 2) this.two();
@@ -107,8 +125,167 @@ methods: {
     }
   },
 
-  
+  one: function() {
+    if (this.noise) {
+      let audio = document.getElementById("sound1");
+      audio.play()
+    }
 
+    this.noise = true;
+    let topleft = document.getElementById("topleft");
+    topleft.style.backgroundColor = "lightgreen"
+  },
+
+  two: function() {
+    if (this.noise) {
+      let audio = document.getElementById("sound2");
+      audio.play()
+    }
+
+    this.noise = true;
+    let topright = document.getElementById("topright");
+    topright.style.backgroundColor = "tomato"
+  },
+
+  three: function() {
+    if (this.noise) {
+      let audio = document.getElementById("sound3");
+      audio.play()
+    }
+
+    this.noise = true;
+    let bottomleft = document.getElementById("bottomleft");
+    bottomleft.style.backgroundColor = "yellow"
+  },
+
+  four: function() {
+    if (this.noise) {
+      let audio = document.getElementById("sound4");
+      audio.play()
+    }
+
+    this.noise = true;
+    let bottomright = document.getElementById("bottomright");
+    bottomright.style.backgroundColor = "lightskyblue"
+  },
+
+  clearColor: function() {
+    topleft.style.backgroundColor = "darkgreen";
+    topright.style.backgroundColor = "darkred";
+    bottomleft.style.backgroundColor = "goldenrod";
+    bottomright.style.backgroundColor = "darkblue";
+  },
+
+  flashColor: function() {
+    topleft.style.backgroundColor = "lightgreen";
+    topright.style.backgroundColor = "tomato";
+    bottomleft.style.backgroundColor = "yellow";
+    bottomright.style.backgroundColor = "lightskyblue";
+  },
+
+  topleftFn: function() {
+    if (this.on) {
+      this.playerOrder.push(1);
+      this.check();
+      this.one();
+      if (!this.win) {
+        setTimeout(() => {
+          this.clearColor();
+        }, 300)
+      }
+    }
+  },
+
+  toprightFn: function() {
+    if (this.on) {
+      this.playerOrder.push(2);
+      this.check();
+      this.two();
+      if (!this.win) {
+        setTimeout(() => {
+          this.clearColor();
+        }, 300)
+      }
+    }
+  },
+
+  bottomleftFn: function() {
+    if (this.on) {
+      this.playerOrder.push(3);
+      this.check();
+      this.three();
+      if (!this.win) {
+        setTimeout(() => {
+          this.clearColor();
+        }, 300)
+      }
+    }
+  },
+
+  bottomrightFn: function() {
+    if (this.on) {
+      this.playerOrder.push(4);
+      this.check();
+      this.four();
+      if (!this.win) {
+        setTimeout(() => {
+          this.clearColor();
+        }, 300)
+      }
+    }
+  },
+
+  check: function() {
+    let turnCounter = document.getElementById("turn")
+    if (this.playerOrder[this.playerOrder.length - 1] !== this.order[this.playerOrder.length - 1]) {
+      this.good = false
+    }
+
+    if (this.playerOrder.length == 20 && this.good) {
+      this.winGame();
+    }
+
+    if (this.good == false) {
+      this.flashColor();
+      turnCounter.innerHTML = "No"
+      setTimeout(() => {
+        turnCounter.innerHTML = this.turn;
+        this.clearColor;
+
+        if (this.strict) {
+          this.play()
+        } else {
+          this.compTurn = true;
+          this.flash = 0;
+          this.playerOrder = [];
+          this.good = true;
+          this.intervalId = setInterval(this.gameTurn, 800)
+        }
+      }, 800)
+
+      this.noise = false;
+    }
+
+    if (this.turn == this.playerOrder.length && this.good && !this.win) {
+      this.turn = this.turn + 1;
+      this.playerOrder = [];
+      this.compTurn = true;
+      this.flash = 0;
+      turnCounter.innerHTML = this.turn;
+      this.intervalId = setInterval(this.gameTurn, 800);
+    }
+  },
+
+  winGame: function() {
+    let turnCounter = document.getElementById("turn");
+    this.flashColor();
+    turnCounter.innerHTML = "Win";
+    this.on = false;
+    this.win = true;
+  }
+
+
+  
 
 }
 
