@@ -1,16 +1,16 @@
 <template>
 <div>
 <audio id="sound1">
-  <source src="../assets/one.mp3">
+  <source src="../assets/1.mp3">
 </audio>
 <audio id="sound2">
-  <source src="../assets/two.mp3">
+  <source src="../assets/2.mp3">
 </audio>
 <audio id="sound3">
-  <source src="../assets/three.mp3">
+  <source src="../assets/3.mp3">
 </audio>
 <audio id="sound4">
-  <source src="../assets/four.mp3">
+  <source src="../assets/4.mp3">
 </audio>
 
   <label for="name">level </label>
@@ -314,28 +314,28 @@ methods: {
 }
 
 .button {
-  border-radius: 50% !important;
+  border-radius: 50px !important;
   font-size: 1.5em;
   background-color: lightgray;
 }
 
 #switches {
   position: absolute;
-  font-family: 'Original Surfer', cursive;
+  font-family: 'Roboto', sans-serif;
   margin-left: 26px;
   margin-top: 110px;
 }
 
 .text2 {
   position: absolute;
-  font-family: 'Original Surfer', cursive;
+  font-family: 'Roboto', sans-serif;
   margin-left: 83px;
   margin-top: 197px;
 }
 
 .text1 {
   position: absolute;
-  font-family: 'Original Surfer', cursive;
+  font-family: 'Roboto', sans-serif;
   margin-left: 19px;
   margin-top: 142px;
 }
@@ -345,7 +345,7 @@ methods: {
 }
 
 #title {
-  font-family: 'Original Surfer', cursive;
+  font-family: 'Roboto', sans-serif;
   position: absolute;
   font-size: 40px;
   margin-left: 35px;
@@ -454,7 +454,7 @@ methods: {
 
 #inner-circle {
   position: absolute;
-  background: grey;
+  background: darkgray;
   border-radius: 50%;
   height: 250px;
   width: 250px;
